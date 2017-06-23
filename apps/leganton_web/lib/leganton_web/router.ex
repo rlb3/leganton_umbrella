@@ -8,4 +8,8 @@ defmodule Leganton.Web.Router do
   scope "/api", Leganton.Web do
     pipe_through :api
   end
+
+  forward "/graphiql",
+    Absinthe.Plug.GraphiQL,
+    schema: Leganton.Web.Schema
 end
