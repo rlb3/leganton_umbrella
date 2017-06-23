@@ -37,7 +37,10 @@ defmodule Leganton.Web.Mixfile do
      {:phoenix_ecto, "~> 3.2"},
      {:gettext, "~> 0.11"},
      {:leganton, in_umbrella: true},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:absinthe_plug, "~> 1.3"},
+     {:absinthe, "~> 1.3"},
+     {:absinthe_ecto, "~> 0.1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
