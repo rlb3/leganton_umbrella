@@ -1,0 +1,1 @@
+alias FeedReader.Reader
