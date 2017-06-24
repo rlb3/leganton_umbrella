@@ -9,7 +9,7 @@ defmodule Leganton.Repo.Migrations.CreateLeganton.Entry do
       add :description, :text
       add :pubdate, :date
       add :read, :boolean
-      add :site_id, references(:sites, on_delete: :nothing, type: :binary_id)
+      add :site_id, references(:sites, on_delete: :delete_all, type: :binary_id)
 
       timestamps()
     end

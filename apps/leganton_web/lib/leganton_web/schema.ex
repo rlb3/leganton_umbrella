@@ -15,7 +15,6 @@ defmodule Leganton.Web.Schema do
         entries = from e in Leganton.Entry,
           where: e.read == false
         {:ok, Leganton.Repo.all(entries)}
-
       end
     end
   end
@@ -41,6 +40,16 @@ defmodule Leganton.Web.Schema do
           |> Leganton.Repo.insert
         end)
         {:ok, site}
+      end
+    end
+
+    field :mark_read, type: :entry do
+      arg :id, :id
+
+      resolve fn %{id: id}, _context ->
+        Leganton.Repo.get(Leganton.Entry, id)
+        |> Leganton.Entry.changeset(%{read: true})
+        |> Leganton.Repo.update
       end
     end
   end

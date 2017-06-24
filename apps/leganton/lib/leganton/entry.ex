@@ -21,6 +21,5 @@ defmodule Leganton.Entry do
   def changeset(%Entry{} = entry, attrs) do
     entry
     |> cast(attrs, [:title, :url, :description, :pubdate, :read])
-    |> validate_required([:title, :url, :description, :pubdate])
   end
 end
