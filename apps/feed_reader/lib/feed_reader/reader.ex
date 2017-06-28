@@ -1,43 +1,16 @@
 defmodule FeedReader.Reader do
-  use GenServer
-
-  @wait_time 0
-
-  def start_link() do
-    GenServer.start_link(__MODULE__, nil, [])
+  def fetch(url) do
+    with {:ok, site} <- fetch_site(url),
+         {:ok, feed} <- fetch_feed(site),
+      do: [site: site, feed: feed]
   end
 
-  def fetch_site(pid, url) do
-    GenServer.cast(pid, {:fetch_site, url})
+  defp fetch_site(url) do
+    {:ok, Scrape.website(url)}
   end
 
-  def get_site(pid) do
-    GenServer.call(pid, :site)
-  end
-
-  def get_feed(pid) do
-    GenServer.call(pid, :feed)
-  end
-
-  def init(_) do
-    {:ok, %{site: nil, feed: nil}}
-  end
-
-  def handle_cast({:fetch_site, url}, state) do
-    Process.send_after(self(), :get_feed, @wait_time)
-    {:noreply, %{state | site: Scrape.website(url)}}
-  end
-
-  def handle_call(:site, _from, state) do
-    {:reply, state.site, state}
-  end
-
-  def handle_call(:feed, _from, state) do
-    {:reply, state.feed, state}
-  end
-
-  def handle_info(:get_feed, %{site: %{feeds: feed_urls}} = state) do
+  defp fetch_feed(%Scrape.Website{feeds: feed_urls} ) do
     feed = Enum.flat_map(feed_urls, fn url -> Scrape.feed(url) end)
-    {:noreply, %{state | feed: feed}}
+    {:ok, feed}
   end
 end

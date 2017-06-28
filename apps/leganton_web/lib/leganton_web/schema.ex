@@ -24,16 +24,15 @@ defmodule Leganton.Web.Schema do
       arg :url, non_null(:string)
 
       resolve fn %{url: url}, _context ->
-        {:ok, pid} = FeedReader.Reader.start_link
-        FeedReader.Reader.fetch_site(pid, url)
+        [site: site_struct, feed: feed_struct] = FeedReader.Reader.fetch(url)
 
         {:ok, site} =
-          FeedReader.Reader.get_site(pid)
+          site_struct
           |> Map.from_struct
           |> (&(Leganton.Site.changeset(%Leganton.Site{}, &1))).()
           |> Leganton.Repo.insert
 
-        FeedReader.Reader.get_feed(pid)
+        feed_struct
         |> Enum.each(fn feed ->
           Ecto.build_assoc(site, :entries)
           |> Leganton.Entry.changeset(feed)
@@ -47,7 +46,8 @@ defmodule Leganton.Web.Schema do
       arg :id, :id
 
       resolve fn %{id: id}, _context ->
-        Leganton.Repo.get(Leganton.Entry, id)
+        Leganton.Entry
+        |> Leganton.Repo.get(id)
         |> Leganton.Entry.changeset(%{read: true})
         |> Leganton.Repo.update
       end
