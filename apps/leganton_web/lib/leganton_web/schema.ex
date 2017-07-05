@@ -20,25 +20,13 @@ defmodule Leganton.Web.Schema do
   end
 
   mutation do
-    field :add_site, type: :site do
+    field :add_site, type: :job_created do
       arg :url, non_null(:string)
 
       resolve fn %{url: url}, _context ->
-        [site: site_struct, feed: feed_struct] = FeedReader.Reader.fetch(url)
+        Que.add(Leganton.Web.AddSiteWorker, url)
 
-        {:ok, site} =
-          site_struct
-          |> Map.from_struct
-          |> (&(Leganton.Site.changeset(%Leganton.Site{}, &1))).()
-          |> Leganton.Repo.insert
-
-        feed_struct
-        |> Enum.each(fn feed ->
-          Ecto.build_assoc(site, :entries)
-          |> Leganton.Entry.changeset(feed)
-          |> Leganton.Repo.insert
-        end)
-        {:ok, site}
+        {:ok, %{status: "working"}}
       end
     end
 
@@ -69,5 +57,9 @@ defmodule Leganton.Web.Schema do
     field :url, :string
     field :url, :date
     field :read, :boolean
+  end
+
+  object :job_created do
+    field :status, :string
   end
 end
