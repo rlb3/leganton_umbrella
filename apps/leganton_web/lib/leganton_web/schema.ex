@@ -26,7 +26,7 @@ defmodule Leganton.Web.Schema do
       resolve fn %{url: url}, _context ->
         Que.add(Leganton.Web.AddSiteWorker, url)
 
-        {:ok, %{status: "working"}}
+        {:ok, %{status: :started}}
       end
     end
 
@@ -60,6 +60,10 @@ defmodule Leganton.Web.Schema do
   end
 
   object :job_created do
-    field :status, :string
+    field :status, :job_status
+  end
+
+  enum :job_status do
+    value :started
   end
 end
