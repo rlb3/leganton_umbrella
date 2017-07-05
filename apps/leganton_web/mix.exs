@@ -41,7 +41,8 @@ defmodule Leganton.Web.Mixfile do
      {:absinthe_plug, "~> 1.3"},
      {:absinthe, "~> 1.3"},
      {:absinthe_ecto, "~> 0.1.0"},
-     {:que, "~> 0.4.1"}]
+     {:que, "~> 0.4.1"},
+     {:cors_plug, "~> 1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

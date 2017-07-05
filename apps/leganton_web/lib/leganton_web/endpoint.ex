@@ -36,6 +36,8 @@ defmodule Leganton.Web.Endpoint do
     key: "_leganton_web_key",
     signing_salt: "m4rT/oUv"
 
+  plug CORSPlug
+
   plug Leganton.Web.Router
 
   @doc """
